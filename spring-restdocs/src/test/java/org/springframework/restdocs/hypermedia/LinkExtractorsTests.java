@@ -34,9 +34,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.restdocs.hypermedia.Link;
-import org.springframework.restdocs.hypermedia.LinkExtractor;
-import org.springframework.restdocs.hypermedia.LinkExtractors;
 import org.springframework.util.FileCopyUtils;
 
 /**
@@ -65,14 +62,14 @@ public class LinkExtractorsTests {
 	@Test
 	public void singleLink() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("single-link"));
+				.extractLinks(createResponse("single-link").getContentAsString());
 		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com")), links);
 	}
 
 	@Test
 	public void multipleLinksWithDifferentRels() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("multiple-links-different-rels"));
+				.extractLinks(createResponse("multiple-links-different-rels").getContentAsString());
 		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com"),
 				new Link("bravo", "http://bravo.example.com")), links);
 	}
@@ -80,7 +77,7 @@ public class LinkExtractorsTests {
 	@Test
 	public void multipleLinksWithSameRels() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("multiple-links-same-rels"));
+				.extractLinks(createResponse("multiple-links-same-rels").getContentAsString());
 		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com/one"),
 				new Link("alpha", "http://alpha.example.com/two")), links);
 	}
@@ -88,14 +85,14 @@ public class LinkExtractorsTests {
 	@Test
 	public void noLinks() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("no-links"));
+				.extractLinks(createResponse("no-links").getContentAsString());
 		assertLinks(Collections.<Link> emptyList(), links);
 	}
 
 	@Test
 	public void linksInTheWrongFormat() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("wrong-format"));
+				.extractLinks(createResponse("wrong-format").getContentAsString());
 		assertLinks(Collections.<Link> emptyList(), links);
 	}
 

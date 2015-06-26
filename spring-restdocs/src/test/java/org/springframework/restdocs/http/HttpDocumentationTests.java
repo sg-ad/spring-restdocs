@@ -25,7 +25,6 @@ import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRe
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class HttpDocumentationTests {
 	}
 
 	@Test
-	public void getRequest() throws IOException {
+	public void getRequest() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.addHeader("Alpha", "a");
 		documentHttpRequest("get-request").handle(new StubMvcResult(request, null));
@@ -68,7 +67,7 @@ public class HttpDocumentationTests {
 	}
 
 	@Test
-	public void getRequestWithQueryString() throws IOException {
+	public void getRequestWithQueryString() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo?bar=baz");
 		documentHttpRequest("get-request-with-query-string").handle(
 				new StubMvcResult(request, null));
@@ -77,7 +76,7 @@ public class HttpDocumentationTests {
 	}
 
 	@Test
-	public void getRequestWithParameter() throws IOException {
+	public void getRequestWithParameter() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.addParameter("b&r", "baz");
 		documentHttpRequest("get-request-with-parameter").handle(
@@ -87,7 +86,7 @@ public class HttpDocumentationTests {
 	}
 
 	@Test
-	public void postRequestWithContent() throws IOException {
+	public void postRequestWithContent() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
 		byte[] content = "Hello, world".getBytes();
 		request.setContent(content);
@@ -98,7 +97,7 @@ public class HttpDocumentationTests {
 	}
 
 	@Test
-	public void postRequestWithParameter() throws IOException {
+	public void postRequestWithParameter() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
 		request.addParameter("b&r", "baz");
 		request.addParameter("a", "alpha");
@@ -112,14 +111,14 @@ public class HttpDocumentationTests {
 	}
 
 	@Test
-	public void basicResponse() throws IOException {
+	public void basicResponse() throws Exception {
 		documentHttpResponse("basic-response").handle(
 				new StubMvcResult(null, new MockHttpServletResponse()));
 		assertThat(responseSnippetLines("basic-response"), hasItem("HTTP/1.1 200 OK"));
 	}
 
 	@Test
-	public void nonOkResponse() throws IOException {
+	public void nonOkResponse() throws Exception {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setStatus(HttpStatus.BAD_REQUEST.value());
 		documentHttpResponse("non-ok-response").handle(new StubMvcResult(null, response));
@@ -128,7 +127,7 @@ public class HttpDocumentationTests {
 	}
 
 	@Test
-	public void responseWithHeaders() throws IOException {
+	public void responseWithHeaders() throws Exception {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setHeader("a", "alpha");
@@ -138,7 +137,7 @@ public class HttpDocumentationTests {
 	}
 
 	@Test
-	public void responseWithContent() throws IOException {
+	public void responseWithContent() throws Exception {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.getWriter().append("content");
 		documentHttpResponse("response-with-content").handle(
@@ -147,16 +146,16 @@ public class HttpDocumentationTests {
 				hasItems("HTTP/1.1 200 OK", "content"));
 	}
 
-	private List<String> requestSnippetLines(String snippetName) throws IOException {
+	private List<String> requestSnippetLines(String snippetName) throws Exception {
 		return snippetLines(snippetName, "http-request");
 	}
 
-	private List<String> responseSnippetLines(String snippetName) throws IOException {
+	private List<String> responseSnippetLines(String snippetName) throws Exception {
 		return snippetLines(snippetName, "http-response");
 	}
 
 	private List<String> snippetLines(String snippetName, String snippetType)
-			throws IOException {
+			throws Exception {
 		File snippetDir = new File(this.outputDir, snippetName);
 		File snippetFile = new File(snippetDir, snippetType + ".adoc");
 		String line = null;

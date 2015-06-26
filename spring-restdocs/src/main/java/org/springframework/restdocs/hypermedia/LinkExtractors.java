@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -85,10 +84,8 @@ public abstract class LinkExtractors {
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public Map<String, List<Link>> extractLinks(MockHttpServletResponse response)
-				throws IOException {
-			Map<String, Object> jsonContent = this.objectMapper.readValue(
-					response.getContentAsString(), Map.class);
+		public Map<String, List<Link>> extractLinks(String responseContent) throws IOException {
+			Map<String, Object> jsonContent = this.objectMapper.readValue(responseContent, Map.class);
 			return extractLinks(jsonContent);
 		}
 

@@ -51,7 +51,7 @@ public abstract class CurlDocumentation {
 
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
-					throws IOException {
+					throws Exception {
 				writer.shellCommand(new CurlRequestDocumentationAction(writer, result));
 			}
 		};

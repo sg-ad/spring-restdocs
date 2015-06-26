@@ -19,6 +19,11 @@ package org.springframework.restdocs.payload;
 import java.util.Arrays;
 
 import org.springframework.restdocs.RestDocumentationResultHandler;
+import org.springframework.restdocs.http.restassured.ParamDescriptor;
+import org.springframework.restdocs.http.restassured.PathParameterSnippetWriter;
+import org.springframework.restdocs.http.restassured.QueryParameterSnippetWriter;
+import org.springframework.restdocs.payload.restassured.RequestFieldSnippetWriter;
+import org.springframework.restdocs.payload.restassured.ResponseFieldSnippetWriter;
 
 /**
  * Static factory methods for documenting a RESTful API's request and response payloads.
@@ -58,6 +63,21 @@ public abstract class PayloadDocumentation {
 			FieldDescriptor... descriptors) {
 		return new RequestFieldSnippetResultHandler(outputDir, Arrays.asList(descriptors));
 	}
+	
+	public static RequestFieldSnippetWriter documentRestAssuredRequestFields(String outputDir,
+																			 FieldDescriptor... descriptors) {
+		return new RequestFieldSnippetWriter(outputDir, Arrays.asList(descriptors));
+	}
+	
+	public static PathParameterSnippetWriter documentRestAssuredRequestPathParameters(String outputDir,
+																			   ParamDescriptor... descriptors) {
+		return new PathParameterSnippetWriter(outputDir, Arrays.asList(descriptors));
+	}
+	
+	public static QueryParameterSnippetWriter documentRestAssuredRequestQueryParameters(String outputDir,
+																				 ParamDescriptor... descriptors) {
+		return new QueryParameterSnippetWriter(outputDir, Arrays.asList(descriptors));
+	}
 
 	/**
 	 * Creates a {@code ResponseFieldsSnippetResultHandler} that will produce a
@@ -72,6 +92,11 @@ public abstract class PayloadDocumentation {
 			FieldDescriptor... descriptors) {
 		return new ResponseFieldSnippetResultHandler(outputDir,
 				Arrays.asList(descriptors));
+	}
+
+	public static ResponseFieldSnippetWriter documentRestAssuredResponseFields(String outputDir,
+																			 FieldDescriptor... descriptors) {
+		return new ResponseFieldSnippetWriter(outputDir, Arrays.asList(descriptors));
 	}
 
 }

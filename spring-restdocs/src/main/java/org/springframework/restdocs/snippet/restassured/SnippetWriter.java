@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.snippet;
+package org.springframework.restdocs.snippet.restassured;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -22,48 +22,49 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import org.springframework.test.web.servlet.MvcResult;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.protocol.HttpContext;
+import org.springframework.restdocs.snippet.AsciidoctorWriter;
+import org.springframework.restdocs.snippet.DocumentationWriter;
+import org.springframework.restdocs.snippet.OutputFileResolver;
 import org.springframework.test.web.servlet.ResultHandler;
 
 /**
  * Base class for a {@link ResultHandler} that writes a documentation snippet
  * 
- * @author Andy Wilkinson
  */
-public abstract class SnippetWritingResultHandler implements ResultHandler {
+public abstract class SnippetWriter {
 
-	private String outputDir;
+	protected String outputDir;
 
-	private String fileName;
+	protected String fileName;
 
-	protected SnippetWritingResultHandler(String outputDir, String fileName) {
+	protected SnippetWriter(String outputDir, String fileName) {
 		this.outputDir = outputDir;
 		this.fileName = fileName;
 	}
 
-	protected abstract void handle(MvcResult result, DocumentationWriter writer)
-			throws Exception;
-
-	@Override
-	public void handle(MvcResult result) throws Exception {
-		Writer writer = createWriter();
+	protected File resolveFile(String outputDir, String fileName) {
+		return new OutputFileResolver().resolve(outputDir, fileName);
+	}
+	
+	public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws Exception {
+		Writer writer = createWriter(resolveFile(this.outputDir, this.fileName + ".adoc"));
 		try {
-			handle(result, new AsciidoctorWriter(writer));
-		}
-		finally {
+			handle(request, response, context, new AsciidoctorWriter(writer));
+		} finally {
 			writer.close();
 		}
 	}
+	
+	public abstract void handle(HttpRequest request, HttpResponse response, HttpContext context, DocumentationWriter writer) throws Exception;
 
-	private Writer createWriter() throws IOException {
-		File outputFile = new OutputFileResolver().resolve(this.outputDir, this.fileName
-				+ ".adoc");
-
+	public static Writer createWriter(File outputFile) throws IOException {
 		if (outputFile != null) {
 			File parent = outputFile.getParentFile();
 			if (!parent.isDirectory() && !parent.mkdirs()) {
-				throw new IllegalStateException("Failed to create directory '" + parent
-						+ "'");
+				throw new IllegalStateException("Failed to create directory '" + parent + "'");
 			}
 			return new FileWriter(outputFile);
 		}

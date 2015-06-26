@@ -8,9 +8,9 @@ import java.util.Map;
  * @author Andy Wilkinson
  *
  */
-class FieldExtractor {
+public class FieldExtractor {
 
-	boolean hasField(String path, Map<String, Object> payload) {
+	public boolean hasField(String path, Map<String, Object> payload) {
 		String[] segments = path.indexOf('.') > -1 ? path.split("\\.")
 				: new String[] { path };
 
@@ -28,7 +28,7 @@ class FieldExtractor {
 		return true;
 	}
 
-	Object extractField(String path, Map<String, Object> payload) {
+	public Object extractField(String path, Map<String, Object> payload) {
 		String[] segments = path.indexOf('.') > -1 ? path.split("\\.")
 				: new String[] { path };
 

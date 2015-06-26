@@ -42,11 +42,11 @@ public class AsciidoctorWriter extends DocumentationWriter {
 	}
 
 	@Override
-	public void shellCommand(final DocumentationAction action) throws IOException {
+	public void shellCommand(final DocumentationAction action) throws Exception {
 		codeBlock("bash", new DocumentationAction() {
 
 			@Override
-			public void perform() throws IOException {
+			public void perform() throws Exception {
 				AsciidoctorWriter.this.print("$ ");
 				action.perform();
 			}
@@ -54,7 +54,7 @@ public class AsciidoctorWriter extends DocumentationWriter {
 	}
 
 	@Override
-	public void codeBlock(String language, DocumentationAction action) throws IOException {
+	public void codeBlock(String language, DocumentationAction action) throws Exception {
 		println();
 		if (language != null) {
 			println("[source," + language + "]");
@@ -96,6 +96,14 @@ public class AsciidoctorWriter extends DocumentationWriter {
 			println();
 		}
 
+		@Override
+		public void spanColumns(int columnCount, String... lines) {
+			println(columnCount + "+a|");
+			for(String line : lines) {
+				println(line);
+			}
+			println();
+		}
 	}
 
 }

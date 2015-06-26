@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * 
  * @author Andy Wilkinson
  */
-class FieldValidator {
+public class FieldValidator {
 
 	private final FieldExtractor fieldExtractor = new FieldExtractor();
 
@@ -40,7 +40,7 @@ class FieldValidator {
 			.enable(SerializationFeature.INDENT_OUTPUT);
 
 	@SuppressWarnings("unchecked")
-	void validate(Reader payloadReader, List<FieldDescriptor> fieldDescriptors)
+	public void validate(Reader payloadReader, List<FieldDescriptor> fieldDescriptors)
 			throws IOException {
 		Map<String, Object> payload = this.objectMapper.readValue(payloadReader,
 				Map.class);
@@ -108,7 +108,7 @@ class FieldValidator {
 	}
 
 	@SuppressWarnings("serial")
-	static class FieldValidationException extends RuntimeException {
+	public static class FieldValidationException extends RuntimeException {
 
 		FieldValidationException(String message) {
 			super(message);

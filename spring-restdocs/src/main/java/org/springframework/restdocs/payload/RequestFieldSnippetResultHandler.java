@@ -18,6 +18,7 @@ package org.springframework.restdocs.payload;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -37,4 +38,12 @@ public class RequestFieldSnippetResultHandler extends FieldSnippetResultHandler 
 		return result.getRequest().getReader();
 	}
 
+	@Override
+	protected String getDescription(Map.Entry<String, FieldDescriptor> entry) {
+		if (!entry.getValue().isOptional()) {
+			return "*Required.*  " + super.getDescription(entry);
+		} else {
+			return super.getDescription(entry);
+		}
+	}
 }

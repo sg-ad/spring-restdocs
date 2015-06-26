@@ -16,6 +16,10 @@
 
 package org.springframework.restdocs.payload;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * A description of a field found in a request or response payload
  * 
@@ -31,6 +35,7 @@ public class FieldDescriptor {
 	private FieldType type;
 
 	private boolean optional;
+	private List<FieldDescriptor> children = new ArrayList<>();
 
 	private String description;
 
@@ -70,20 +75,33 @@ public class FieldDescriptor {
 		this.description = description;
 		return this;
 	}
+	
+	public FieldDescriptor withChild(FieldDescriptor... child) {
+		this.children.addAll(Arrays.asList(child));
+		return this;
+	}
 
-	String getPath() {
+	public String getPath() {
 		return this.path;
 	}
 
-	FieldType getType() {
+	public FieldType getType() {
 		return this.type;
 	}
 
-	boolean isOptional() {
+	public boolean isOptional() {
 		return this.optional;
 	}
 
-	String getDescription() {
+	public String getDescription() {
 		return this.description;
+	}
+	
+	public boolean hasChild() { 
+		return !this.children.isEmpty();
+	}
+	
+	public List<FieldDescriptor> getChildren() {
+		return children;
 	}
 }

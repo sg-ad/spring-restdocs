@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.hypermedia;
+package org.springframework.restdocs.hypermedia.restassured;
 
 import static org.junit.Assert.fail;
 
@@ -26,27 +26,33 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.springframework.restdocs.hypermedia.Link;
+import org.springframework.restdocs.hypermedia.LinkDescriptor;
+import org.springframework.restdocs.hypermedia.LinkExtractor;
+import org.springframework.restdocs.hypermedia.LinkExtractors;
 import org.springframework.restdocs.snippet.DocumentationWriter;
 import org.springframework.restdocs.snippet.DocumentationWriter.TableAction;
 import org.springframework.restdocs.snippet.DocumentationWriter.TableWriter;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.restdocs.snippet.restassured.SnippetWriter;
 import org.springframework.util.Assert;
 
 /**
  * A {@link SnippetWritingResultHandler} that produces a snippet documenting a RESTful
  * resource's links.
  * 
- * @author Andy Wilkinson
  */
-public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
+public class LinkSnippetWriter extends SnippetWriter {
 
 	private final Map<String, LinkDescriptor> descriptorsByRel = new HashMap<String, LinkDescriptor>();
 
 	private final LinkExtractor extractor;
 
-	LinkSnippetResultHandler(String outputDir, LinkExtractor linkExtractor,
-			List<LinkDescriptor> descriptors) {
+	LinkSnippetWriter(String outputDir, LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
 		super(outputDir, "links");
 		this.extractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {
@@ -57,23 +63,26 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 	}
 
 	@Override
-	protected void handle(MvcResult result, DocumentationWriter writer)
-			throws IOException {
+	public void handle(HttpRequest request, HttpResponse response, HttpContext context, DocumentationWriter writer) throws Exception {
+		String responseContent = EntityUtils.toString(response.getEntity());
+		String responseContentType = response.getFirstHeader("Content-Type").getName();
+		writeLinks(writer, responseContent, responseContentType);
+	}
+
+	private void writeLinks(DocumentationWriter writer, String responseContent, String responseContentType) throws IOException {
 		Map<String, List<Link>> links;
 		if (this.extractor != null) {
-			links = this.extractor.extractLinks(result.getResponse().getContentAsString());
+			links = this.extractor.extractLinks(responseContent);
 		}
 		else {
-			String contentType = result.getResponse().getContentType();
-			LinkExtractor extractorForContentType = LinkExtractors
-					.extractorForContentType(contentType);
+			LinkExtractor extractorForContentType = LinkExtractors.extractorForContentType(responseContentType);
 			if (extractorForContentType != null) {
-				links = extractorForContentType.extractLinks(result.getResponse().getContentAsString());
+				links = extractorForContentType.extractLinks(responseContent);
 			}
 			else {
 				throw new IllegalStateException(
 						"No LinkExtractor has been provided and one is not available for the content type "
-								+ contentType);
+								+ responseContentType);
 			}
 
 		}
@@ -107,14 +116,13 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 			@Override
 			public void perform(TableWriter tableWriter) throws IOException {
 				tableWriter.headers("Relation", "Description");
-				for (Entry<String, LinkDescriptor> entry : LinkSnippetResultHandler.this.descriptorsByRel
+				for (Entry<String, LinkDescriptor> entry : LinkSnippetWriter.this.descriptorsByRel
 						.entrySet()) {
 					tableWriter.row(entry.getKey(), entry.getValue().getDescription());
 				}
 			}
 
 		});
-
 	}
 
 }

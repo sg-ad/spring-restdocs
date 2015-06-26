@@ -53,7 +53,7 @@ public abstract class HttpDocumentation {
 
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
-					throws IOException {
+					throws Exception {
 				writer.codeBlock("http", new HttpRequestDocumentationAction(writer,
 						result));
 			}
@@ -72,7 +72,7 @@ public abstract class HttpDocumentation {
 
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
-					throws IOException {
+					throws Exception {
 				writer.codeBlock("http", new HttpResponseDocumentationAction(writer,
 						result));
 			}

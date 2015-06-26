@@ -40,7 +40,7 @@ public abstract class DocumentationWriter extends PrintWriter {
 	 * @param action the action that will produce the shell command
 	 * @throws IOException if the documentation fails
 	 */
-	public abstract void shellCommand(DocumentationAction action) throws IOException;
+	public abstract void shellCommand(DocumentationAction action) throws Exception;
 
 	/**
 	 * Calls the given {@code action} to document a code block. The code block will be
@@ -54,7 +54,7 @@ public abstract class DocumentationWriter extends PrintWriter {
 	 * @throws IOException if the documentation fails
 	 */
 	public abstract void codeBlock(String language, DocumentationAction action)
-			throws IOException;
+			throws Exception;
 
 	/**
 	 * Calls the given {@code action} to document a table. Any prefix necessary for
@@ -80,7 +80,7 @@ public abstract class DocumentationWriter extends PrintWriter {
 		 * 
 		 * @throws IOException if the action fails
 		 */
-		void perform() throws IOException;
+		void perform() throws Exception;
 
 	}
 
@@ -119,6 +119,8 @@ public abstract class DocumentationWriter extends PrintWriter {
 		 * @param entries the entries in the row
 		 */
 		void row(String... entries);
+		
+		void spanColumns(int columnCount, String... lines);
 
 	}
 

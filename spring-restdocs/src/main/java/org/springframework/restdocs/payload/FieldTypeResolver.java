@@ -24,11 +24,11 @@ import java.util.Map;
  * 
  * @author Andy Wilkinson
  */
-class FieldTypeResolver {
+public class FieldTypeResolver {
 
 	private final FieldExtractor fieldExtractor = new FieldExtractor();
 
-	FieldType resolveFieldType(String path, Map<String, Object> payload) {
+	public FieldType resolveFieldType(String path, Map<String, Object> payload) {
 		return determineFieldType(this.fieldExtractor.extractField(path, payload));
 	}
 

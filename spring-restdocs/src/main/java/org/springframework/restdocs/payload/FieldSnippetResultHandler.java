@@ -96,14 +96,17 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 					FieldType type = descriptor.getType() != null ? descriptor.getType()
 							: FieldSnippetResultHandler.this.fieldTypeResolver
 									.resolveFieldType(descriptor.getPath(), payload);
-					tableWriter.row(entry.getKey().toString(), type.toString(), entry
-							.getValue().getDescription());
+					tableWriter.row(entry.getKey().toString(), type.toString(), getDescription(entry));
 				}
 
 			}
 
 		});
 
+	}
+
+	protected String getDescription(Entry<String, FieldDescriptor> entry) {
+		return entry.getValue().getDescription();
 	}
 
 	@SuppressWarnings("unchecked")

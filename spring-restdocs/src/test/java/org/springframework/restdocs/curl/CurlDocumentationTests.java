@@ -23,7 +23,6 @@ import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRe
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void getRequest() throws IOException {
+	public void getRequest() throws Exception {
 		documentCurlRequest("get-request").handle(
 				new StubMvcResult(new MockHttpServletRequest("GET", "/foo"), null));
 		assertThat(requestSnippetLines("get-request"),
@@ -64,7 +63,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void nonGetRequest() throws IOException {
+	public void nonGetRequest() throws Exception {
 		documentCurlRequest("non-get-request").handle(
 				new StubMvcResult(new MockHttpServletRequest("POST", "/foo"), null));
 		assertThat(requestSnippetLines("non-get-request"),
@@ -72,7 +71,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void requestWithContent() throws IOException {
+	public void requestWithContent() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setContent("content".getBytes());
 		documentCurlRequest("request-with-content").handle(
@@ -82,7 +81,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void requestWitUriQueryString() throws IOException {
+	public void requestWitUriQueryString() throws Exception {
 		documentCurlRequest("request-with-uri-query-string").handle(
 				new StubMvcResult(new MockHttpServletRequest("GET", "/foo?param=value"),
 						null));
@@ -91,7 +90,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void requestWithQueryString() throws IOException {
+	public void requestWithQueryString() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setQueryString("param=value");
 		documentCurlRequest("request-with-query-string").handle(
@@ -101,7 +100,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void requestWithOneParameter() throws IOException {
+	public void requestWithOneParameter() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.addParameter("k1", "v1");
 		documentCurlRequest("request-with-one-parameter").handle(
@@ -111,7 +110,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void requestWithMultipleParameters() throws IOException {
+	public void requestWithMultipleParameters() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.addParameter("k1", "v1");
 		request.addParameter("k2", "v2");
@@ -123,7 +122,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void requestWithUrlEncodedParameter() throws IOException {
+	public void requestWithUrlEncodedParameter() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.addParameter("k1", "foo bar&");
 		documentCurlRequest("request-with-url-encoded-parameter").handle(
@@ -133,7 +132,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void postRequestWithOneParameter() throws IOException {
+	public void postRequestWithOneParameter() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
 		request.addParameter("k1", "v1");
 		documentCurlRequest("post-request-with-one-parameter").handle(
@@ -143,7 +142,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void postRequestWithMultipleParameters() throws IOException {
+	public void postRequestWithMultipleParameters() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
 		request.addParameter("k1", "v1");
 		request.addParameter("k2", "v2");
@@ -156,7 +155,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void postRequestWithUrlEncodedParameter() throws IOException {
+	public void postRequestWithUrlEncodedParameter() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
 		request.addParameter("k1", "a&b");
 		documentCurlRequest("post-request-with-url-encoded-parameter").handle(
@@ -166,7 +165,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void requestWithHeaders() throws IOException {
+	public void requestWithHeaders() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		request.addHeader("a", "alpha");
@@ -178,7 +177,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void httpWithNonStandardPort() throws IOException {
+	public void httpWithNonStandardPort() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(8080);
 		documentCurlRequest("http-with-non-standard-port").handle(
@@ -188,7 +187,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void httpsWithStandardPort() throws IOException {
+	public void httpsWithStandardPort() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(443);
 		request.setScheme("https");
@@ -199,7 +198,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void httpsWithNonStandardPort() throws IOException {
+	public void httpsWithNonStandardPort() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(8443);
 		request.setScheme("https");
@@ -210,7 +209,7 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void requestWithCustomHost() throws IOException {
+	public void requestWithCustomHost() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
 		documentCurlRequest("request-with-custom-host").handle(
@@ -219,12 +218,12 @@ public class CurlDocumentationTests {
 				hasItem("$ curl http://api.example.com/foo -i"));
 	}
 
-	private List<String> requestSnippetLines(String snippetName) throws IOException {
+	private List<String> requestSnippetLines(String snippetName) throws Exception {
 		return snippetLines(snippetName, "curl-request");
 	}
 
 	private List<String> snippetLines(String snippetName, String snippetType)
-			throws IOException {
+			throws Exception {
 		File snippetDir = new File(this.outputDir, snippetName);
 		File snippetFile = new File(snippetDir, snippetType + ".adoc");
 		String line = null;

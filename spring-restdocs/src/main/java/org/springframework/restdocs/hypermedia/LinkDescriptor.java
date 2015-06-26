@@ -29,7 +29,7 @@ public class LinkDescriptor {
 
 	private String description;
 
-	LinkDescriptor(String rel) {
+	public LinkDescriptor(String rel) {
 		this.rel = rel;
 	}
 
@@ -44,11 +44,11 @@ public class LinkDescriptor {
 		return this;
 	}
 
-	String getRel() {
+	public String getRel() {
 		return this.rel;
 	}
 
-	String getDescription() {
+	public String getDescription() {
 		return this.description;
 	}
 }

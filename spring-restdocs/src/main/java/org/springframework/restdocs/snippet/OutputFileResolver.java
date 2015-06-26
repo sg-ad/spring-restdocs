@@ -31,11 +31,11 @@ import org.springframework.restdocs.config.RestDocumentationContext;
  * 
  * @author Andy Wilkinson
  */
-class OutputFileResolver {
+public class OutputFileResolver {
 
 	private static final Pattern CAMEL_CASE_PATTERN = Pattern.compile("([A-Z])");
 
-	File resolve(String outputDirectory, String fileName) {
+	public File resolve(String outputDirectory, String fileName) {
 		Map<String, String> replacements = createReplacements();
 		String path = outputDirectory;
 		for (Entry<String, String> replacement : replacements.entrySet()) {
